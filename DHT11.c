@@ -1,4 +1,5 @@
 #include <iostm8s103k3.h>
+
 #include "stdbool.h"
 #include "stdint.h"
 
@@ -11,11 +12,11 @@ void delay_us(unsigned char us)
   while(us--);
 }
 
-void  delay_ms1(unsigned int ms)
+void  delay_ms(unsigned int ms)
 {
     unsigned int i,j;             //定义无符号整型变量i，j
   for(i=0;i<ms;i++)             //循环i自加，直到i=ms
-    for(j=0;j<1600;j++);        //循环j自加，3164次
+    for(j=0;j<3000;j++);        //循环j自加，3164次
 }
 
 //IO方向设置
@@ -38,7 +39,7 @@ void DHT11_Rst(void)
 {
     DHT11_IO_OUT(); //设置为输出
     DHT11_DQ_OUT=0; //拉低DQ
-    delay_ms1(20);   //拉低至少18ms
+    delay_ms(20);   //拉低至少18ms
     DHT11_DQ_OUT=1; //置高DQ
     delay_us(30);   //主机拉高20--40us
 }

@@ -4,7 +4,7 @@
 #define DS1302_CE       PB_ODR_ODR0
 #define DS1302_IO_OUT   PB_ODR_ODR1     //DS1302输入输出端口（输出）
 #define DS1302_IO_IN    PB_IDR_IDR1     //DS1302输入输出端口（输入）
-#define DS1302_SCLK     PB_ODR_ODR2
+#define DS1302_SCLK     PB_ODR_ODR3
 
 //寄存器写入地址/指令定义
 #define DS1302_SECOND		0x80
@@ -42,7 +42,8 @@ void DS1302_IO_DDR(unsigned char ddr)
 }
 
 //时间数组，索引0~6分别为年、月、日、时、分、秒、星期，设置为有符号的便于<0的判断
-char DS1302_Time[]={24,4,25,17,55,30,4};
+char DS1302_Time[7]={24,4,28,17,48,0,7};
+char DS1302_Temp[7];    //配置时间时的暂存变量
 
 /**
   * @brief  DS1302初始化
@@ -55,9 +56,9 @@ void DS1302_Init(void)
         PB_CR1_C10 = 1;         //设置推挽输出
         PB_CR2_C20 = 0;         //设置2MHZ
         
-        PB_DDR_DDR2 = 1;        //设置输出模式
-        PB_CR1_C12 = 1;         //设置推挽输出
-        PB_CR2_C22 = 0;         //设置2MHZ
+        PB_DDR_DDR3 = 1;        //设置输出模式
+        PB_CR1_C13 = 1;         //设置推挽输出
+        PB_CR2_C23 = 0;         //设置2MHZ
         
 	DS1302_CE=0;
 	DS1302_SCLK=0;
@@ -155,6 +156,22 @@ void DS1302_SetTime(void)
 	DS1302_WriteByte(DS1302_MINUTE,DS1302_Time[4]/10*16+DS1302_Time[4]%10); //分
 	DS1302_WriteByte(DS1302_SECOND,DS1302_Time[5]/10*16+DS1302_Time[5]%10); //秒
 	DS1302_WriteByte(DS1302_DAY,DS1302_Time[6]/10*16+DS1302_Time[6]%10);    //星期
+	DS1302_WriteByte(DS1302_WP,0x80);       //打开写保护
+}
+
+void DS1302_configTime(void)
+{
+	DS1302_WriteByte(DS1302_WP,0x00);                                       //关闭写保护
+        DS1302_WriteByte(DS1302_SECOND,0X80);                                   //暂停时钟
+        DS1302_WriteByte(DS1302_CHARGER,0x90);                                  //涓流充电
+        //十进制转BCD码后写入
+	DS1302_WriteByte(DS1302_YEAR,DS1302_Temp[0]/10*16+DS1302_Temp[0]%10);   //年
+	DS1302_WriteByte(DS1302_MONTH,DS1302_Temp[1]/10*16+DS1302_Temp[1]%10);  //月
+	DS1302_WriteByte(DS1302_DATE,DS1302_Temp[2]/10*16+DS1302_Temp[2]%10);   //日
+	DS1302_WriteByte(DS1302_HOUR,DS1302_Temp[3]/10*16+DS1302_Temp[3]%10);   //时
+	DS1302_WriteByte(DS1302_MINUTE,DS1302_Temp[4]/10*16+DS1302_Temp[4]%10); //分
+	DS1302_WriteByte(DS1302_SECOND,DS1302_Temp[5]/10*16+DS1302_Temp[5]%10); //秒
+	DS1302_WriteByte(DS1302_DAY,DS1302_Temp[6]/10*16+DS1302_Temp[6]%10);    //星期
 	DS1302_WriteByte(DS1302_WP,0x80);       //打开写保护
 }
 

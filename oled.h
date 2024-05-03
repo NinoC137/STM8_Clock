@@ -1,9 +1,9 @@
 #ifndef __OLED_H
 #define __OLED_H
 
-#define        uint8_t        unsigned    char
-#define        uint16_t         unsigned    int
-#define        uint32_t        unsigned    long
+#define uint8_t  unsigned char
+#define uint16_t unsigned int
+#define uint32_t unsigned long
 
 #define OLED_CMD 0 
 #define OLED_DATA 1
@@ -25,9 +25,6 @@
 #define SET_SDA_OUT() {PB_DDR_DDR5=1; PB_CR1_C15 = 1; PB_CR2_C25 = 0;} 
 #define SET_SDA_IN() {PB_DDR_DDR5=0; PB_CR1_C15= 0; PB_CR2_C25 = 0;} 
 
-void Delay_5us(void) ;
-void delayms(unsigned int ms);
-
 void I2C_Init(void);
 void I2C_Start(void) ;
 void I2C_Stop(void) ;
@@ -46,5 +43,6 @@ void OLED_ShowChar(unsigned char x,unsigned char y,unsigned char chr,unsigned ch
 void OLED_ShowString(unsigned char x,unsigned char y,unsigned char const *chr);
 void OLED_ShowNum(unsigned char x,unsigned char y,unsigned long int num,unsigned char len,unsigned char size);
 void OLED12864_ShowChianese(unsigned char x,unsigned char y,unsigned char *s,unsigned char len);
+void OLED_ShowClock32x32Logo(unsigned char x,unsigned char y, unsigned char *s);
 
 #endif

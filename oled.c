@@ -1,4 +1,5 @@
-#include "iostm8s003f3.h"
+#include "iostm8s103k3.h"
+
 #include "oled.h"
 #include "oledfont.h"
 //-------------------------------------------------------------- 
@@ -190,7 +191,6 @@ void OLED_Set_Pos(unsigned char x, unsigned char y)
 
 void OLED_Init(void)
 {
-  
         I2C_Init();
 	delayms(800);							//初始化之前的延时
 	OLED_WR_Byte(0xAE,OLED_CMD); //关闭显示
@@ -200,9 +200,9 @@ void OLED_Init(void)
 	OLED_WR_Byte(0x81,OLED_CMD);//设置对比度控制寄存器
 	OLED_WR_Byte(0xCF,OLED_CMD);//设置SEG输出电流亮度
         
-	OLED_WR_Byte(0xA0,OLED_CMD);//段重定义设置,bit0:0,0->0;1,0->127; 0xa0左右反置 0xa1正常
+	OLED_WR_Byte(0xA1,OLED_CMD);//段重定义设置,bit0:0,0->0;1,0->127; 0xa0左右反置 0xa1正常
         
-	OLED_WR_Byte(0xC0,OLED_CMD);//设置COM扫描方向;bit3:0,普通模式;1,重定义模式 COM[N-1]->COM0;N:驱动路数   0xc0上下反置 0xc8正常
+	OLED_WR_Byte(0xC8,OLED_CMD);//设置COM扫描方向;bit3:0,普通模式;1,重定义模式 COM[N-1]->COM0;N:驱动路数   0xc0上下反置 0xc8正常
         
 	OLED_WR_Byte(0xA6,OLED_CMD);//设置正常显示(设置显示方式;bit0:1,反相显示;0,正常显示	)
 	OLED_WR_Byte(0xA8,OLED_CMD);//设置驱动路数 设置多路复用比(1比64)
@@ -357,4 +357,17 @@ void OLED12864_ShowChianese(unsigned char x,unsigned char y,unsigned char *s,uns
     {
       Write_IIC_Data(*s++);
     }
+}
+
+void OLED_ShowClock32x32Logo(unsigned char x,unsigned char y, unsigned char *s){
+  OLED_Set_Pos(x,y);
+  
+  for(int i = 0; i < 4; i++){
+  
+    for(int j = 0; j < 32; j++){
+      Write_IIC_Data(*s++);
+    }
+    
+    OLED_Set_Pos(x,++y);
+  }
 }

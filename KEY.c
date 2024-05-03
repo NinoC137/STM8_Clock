@@ -1,21 +1,4 @@
-#include "key.h"
-
-#define         KEY1    PA_IDR_IDR3     //模式选取  0 -- 显示 1 -- 设置
-#define         KEY2    PF_IDR_IDR4     //在配置中生效: next 下一项配置
-#define         KEY3    PB_IDR_IDR7     //在配置中生效: +     选中的项,加1
-#define         KEY4    PB_IDR_IDR6     //在配置中生效: -     选中的项,减1
-#define         KEY5    PC_IDR_IDR3     //确认
-#define         KEY6    PC_IDR_IDR2
-
-void  delay_ms(uint8_t  ms)
-{
-    uint8_t  i,j;
-    while(ms--)
-    {
-        for(i=4;i!=0;i--)
-          for(j=10;j!=0;j--);
-    }
-}
+#include "KEY.h"
 
 void Key_Init(void)
 {
@@ -45,16 +28,37 @@ void Key_Init(void)
     PC_CR2_C22 = 0;             //禁止外部中断
 }
 
-uint8_t KeyScan(void)       //
+uint8_t KeyScan(void)       
 {
-    uint8_t KeyNumber=0;
+    uint8_t KeyNum = 0;
+    uint8_t tempValue = 0;
+    static uint8_t keyValue_old = 0;;
     
-    if(KEY1 == 0){delay_ms(10);while(KEY1 == 0);delay_ms(10);KeyNumber = 1;}
-    if(KEY2 == 0){delay_ms(10);while(KEY2 == 0);delay_ms(10);KeyNumber = 2;}
-    if(KEY3 == 0){delay_ms(10);while(KEY3 == 0);delay_ms(10);KeyNumber = 3;}
-    if(KEY4 == 0){delay_ms(10);while(KEY4 == 0);delay_ms(10);KeyNumber = 4;}
-    if(KEY5 == 0){delay_ms(10);while(KEY5 == 0);delay_ms(10);KeyNumber = 5;}
-    if(KEY6 == 0){delay_ms(10);while(KEY6 == 0);delay_ms(10);KeyNumber = 6;}
+    if(KEY1 == 0){
+      tempValue = 1;
+    }
+    if(KEY2 == 0){
+      tempValue = 2;
+    }
+    if(KEY3 == 0){
+      tempValue = 3;
+    }
+    if(KEY4 == 0){
+      tempValue = 4;
+    }
+    if(KEY5 == 0){
+      tempValue = 5;
+    }
+    if(KEY6 == 0){
+      tempValue = 6;
+    }
     
-    return KeyNumber;
+    if(keyValue_old == tempValue){
+      KeyNum = keyValue_old;
+      keyValue_old = 0;
+    }
+    
+    keyValue_old = tempValue;
+    
+    return KeyNum;
 }

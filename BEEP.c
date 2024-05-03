@@ -5,7 +5,7 @@ uint8_t CLOCK_MODE = 1;         //0为关闭,1为开启
 
 void BEEP_init(void){
     //蜂鸣器配置
-    PD_DDR_DDR4 = 0;            //PD4输出模式
+    PD_DDR_DDR4 = 1;            //PD4输出模式
     PD_CR1_C14 = 1;             //推挽输出
     PD_CR2_C24 = 0;             //低速
 }
